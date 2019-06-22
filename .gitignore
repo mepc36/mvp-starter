@@ -1,1 +1,4 @@
 node_modules
+react-clients/src/components/musixMatchKey.js
+react-client/src/components/wordsApiKey.js
+react-clients/src/components/oecKey.js
