@@ -1,20 +1,30 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-// UNCOMMENT THE DATABASE YOU'D LIKE TO USE
-// var items = require('../database-mysql');
-// var items = require('../database-mongo');
+var wordProfiles = require('../database-mongo');
 
 var app = express();
 
 app.use(express.static(__dirname + '/../react-client/dist'));
 
-// UNCOMMENT FOR ANGULAR
-// app.use(express.static(__dirname + '/../angular-client'));
-// app.use(express.static(__dirname + '/../node_modules'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/items', function (req, res) {
-  items.selectAll(function(err, data) {
-    if(err) {
+
+app.get('/wordProfiles', function (req, res) {
+  wordProfiles.selectAllWordProfiles(function(err, data) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(200).json(data);
+    }
+  });
+});
+
+app.post('/wordProfiles', function (req, res) {
+  console.log(`REQUEST: ${JSON.stringify(req.body)}`);
+
+  wordProfiles.insertWordProfile(req.body, (err, data) => {
+    if (err) {
       res.sendStatus(500);
     } else {
       res.json(data);
@@ -25,4 +35,3 @@ app.get('/items', function (req, res) {
 app.listen(3000, function() {
   console.log('listening on port 3000!');
 });
-

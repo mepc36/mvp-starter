@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/favoriteWords');
 
 var db = mongoose.connection;
 
@@ -11,21 +11,50 @@ db.once('open', function() {
   console.log('mongoose connected successfully');
 });
 
-var itemSchema = mongoose.Schema({
-  quantity: Number,
-  description: String
+var wordProfileSchema = mongoose.Schema({
+  word: String,
+  definition: String,
+  partOfSpeech: String,
+  frequency: Number,
+  numberOfSyllables: Number,
+  pronunciation: String,
+  similarTo: String,
+  antonyms: String,
+  examples: String,
+  list: String,
 });
 
-var Item = mongoose.model('Item', itemSchema);
+var WordProfile = mongoose.model('WordProfile', wordProfileSchema);
 
-var selectAll = function(callback) {
-  Item.find({}, function(err, items) {
+var selectAllWordProfiles = function(callback) {
+  WordProfile.find({}, function(err, wordProfiles) {
     if(err) {
       callback(err, null);
     } else {
-      callback(null, items);
+      callback(null, wordProfiles);
     }
   });
 };
 
-module.exports.selectAll = selectAll;
+var insertWordProfile = (newWordProfile, callback) => {
+  // MONGOOSE:
+  WordProfile.create(newWordProfile, (error, result) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      callback(null, result);
+    }
+  });
+
+  // MONGODB:
+  // db.collection('favoriteWords').insert(newWordProfile, (error, result) => {
+  //   if (error) {
+  //     callback(error, null);
+  //   } else {
+  //     callback(null, result);
+  //   }
+  // });
+};
+
+module.exports.selectAllWordProfiles = selectAllWordProfiles;
+module.exports.insertWordProfile = insertWordProfile;
