@@ -21,7 +21,7 @@ app.get('/wordProfiles', function (req, res) {
 });
 
 app.post('/wordProfiles', function (req, res) {
-  console.log(`REQUEST: ${JSON.stringify(req.body)}`);
+  console.log(`REQ.BODY: ${JSON.stringify(req.body)}`);
 
   wordProfiles.insertWordProfile(req.body, (err, data) => {
     if (err) {

@@ -10,7 +10,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       chosenWord: '',
-      favoriteWords: ['serendipitous', 'mondegreen', 'tittle', 'paella', 'antediluvian', 'sinecure', 'imprimatur', 'cellar door', 'summer afternoon', 'hebenon', 'honorificabilitudinitatibus', 'zhuzh', 'jabberwocky', 'sesquipedalian', 'contronym', 'gewgaw', 'pettifog', 'gyre', 'milquetoast', 'euphoia', 'rigmarole', 'esoteric', 'cardamom', 'erroneous', 'tiramisu'],
+      favoriteWords: ['serendipitous', 'mondegreen', 'tittle', 'paella', 'antediluvian', 'sinecure', 'imprimatur', 'cellar door', 'summer afternoon', 'hebenon', 'honorificabilitudinitatibus', 'zhuzh', 'jabberwocky', 'sesquipedalian', 'contronym', 'hyphy', 'gewgaw', 'pettifog', 'gyre', 'milquetoast', 'eunoia', 'rigmarole', 'esoteric', 'cardamom', 'erroneous', 'tiramisu'],
       word: '',
       profile: {
         definition: '',
