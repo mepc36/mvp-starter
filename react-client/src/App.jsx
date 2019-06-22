@@ -9,11 +9,10 @@ class App extends React.Component {
     super(props);
     this.state = {
       chosenWord: '',
-      favoriteWords: ['serendipitous', 'mondegreen', 'tittle', 'antediluvian', 'sinecure', 'imprimatur', 'cellar door', 'summer afternoon', 'hebenon', 'honorificabilitudinitatibus', 'zhuzh', 'jabberwocky', 'sesquipedalian', 'contronym', 'gewgaw', 'pettifog', 'gyre', 'milquetoast', 'euphoia', 'rigmarole', 'esoteric', 'cardamom', 'erroneous', 'tiramisu'],
+      favoriteWords: ['serendipitous', 'mondegreen', 'tittle', 'paella', 'antediluvian', 'sinecure', 'imprimatur', 'cellar door', 'summer afternoon', 'hebenon', 'honorificabilitudinitatibus', 'zhuzh', 'jabberwocky', 'sesquipedalian', 'contronym', 'gewgaw', 'pettifog', 'gyre', 'milquetoast', 'euphoia', 'rigmarole', 'esoteric', 'cardamom', 'erroneous', 'tiramisu'],
       word: '',
       definition: '',
       partOfSpeech: '',
-      also: '',
       similarTo: '',
       antonyms: '',
       examples: '',
@@ -60,21 +59,20 @@ class App extends React.Component {
         const newWord = parsed.word;
         const newDefinition = parsed.results[0].definition;
         const newPartOfSpeech = parsed.results[0].partOfSpeech;
-        const newFrequency = JSON.stringify(parsed.frequency);
-        const newNumberOfSyllables = JSON.stringify(parsed.syllables.count);
+        const newFrequency = parsed.frequency;
+        const newNumberOfSyllables = parsed.syllables.count;
         const newPronunciation = parsed.pronunciation.all;
         // Arrays:
         const newSimilarTo = parsed.results[0].similarTo[0];
         const newAntonyms = parsed.results[0].antonyms[0];
         const newExamples = parsed.results[0].examples[0];
-        // Mapp all 4:
-        const newList = JSON.stringify(parsed.syllables.list);
+        // TO-DO: MAP ALL SYLLABLES:
+        const newList = parsed.syllables.list;
         
         this.setState({
           word: newWord,
           definition: newDefinition,
           partOfSpeech: newPartOfSpeech,
-          also: newAlso,
           similarTo: newSimilarTo,
           antonyms: newAntonyms,
           examples: newExamples,
@@ -97,7 +95,7 @@ class App extends React.Component {
 
   render () {
     return (<div>
-      <h1>Favorite Word app!</h1>
+      <h1>Friends With Words:</h1>
       <h2>Do you "{this.state.chosenWord}"?</h2>
       <h2>So do we!</h2>
       <WordSubmit submitInfo={this.submitInfo.bind(this)} getWord={this.getWord.bind(this)}/>
