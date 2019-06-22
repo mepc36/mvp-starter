@@ -34,53 +34,54 @@ class App extends React.Component {
     e.preventDefault();
     const wordsApiKey = keys.wordsApiKey;
     $.ajax({
-      url: `https://wordsapiv1.p.rapidapi.com/words/${this.state.word}/`,
+      url: `https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=mask`,
       headers: {
-        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com",
+        "X-RapidAPI-Host": "twinword-word-graph-dictionary.p.rapidapi.com",
         "X-RapidAPI-Key": wordsApiKey,
       },
       dataType: 'application/json',
       error: (success) => {
-        const parsed = JSON.parse(success.responseText);
-        // console.log(`JSON.stringify(parsed.results): ${JSON.stringify(parsed)}`);
-        console.log(`Word: ${JSON.stringify(parsed.word)}`);
-        console.log(`Definition: ${JSON.stringify(parsed.results[0].definition)}`);
-        console.log(`Part of Speech: ${JSON.stringify(parsed.results[0].partOfSpeech)}`);
-        console.log(`Also: ${JSON.stringify(parsed.results[0].also)}`);
-        console.log(`Similar To: ${JSON.stringify(parsed.results[0].similarTo)}`);
-        console.log(`Antonyms: ${JSON.stringify(parsed.results[0].antonyms)}`);
-        console.log(`Examples: ${JSON.stringify(parsed.results[0].examples)}`);
-        console.log(`Frequency: ${JSON.stringify(parsed.frequency)}`);
-        console.log(`Syllables list: ${JSON.stringify(parsed.syllables.list)}`);
-        console.log(`Syllables count: ${JSON.stringify(parsed.syllables.count)}`);
-        console.log(`Pronunciation: ${JSON.stringify(parsed.pronunciation.all)}`);
+        console.log(success);
+        // const parsed = JSON.parse(success.responseText);
+        // // console.log(`JSON.stringify(parsed.results): ${JSON.stringify(parsed)}`);
+        // console.log(`Word: ${JSON.stringify(parsed.word)}`);
+        // console.log(`Definition: ${JSON.stringify(parsed.results[0].definition)}`);
+        // console.log(`Part of Speech: ${JSON.stringify(parsed.results[0].partOfSpeech)}`);
+        // console.log(`Also: ${JSON.stringify(parsed.results[0].also)}`);
+        // console.log(`Similar To: ${JSON.stringify(parsed.results[0].similarTo)}`);
+        // console.log(`Antonyms: ${JSON.stringify(parsed.results[0].antonyms)}`);
+        // console.log(`Examples: ${JSON.stringify(parsed.results[0].examples)}`);
+        // console.log(`Frequency: ${JSON.stringify(parsed.frequency)}`);
+        // console.log(`Syllables list: ${JSON.stringify(parsed.syllables.list)}`);
+        // console.log(`Syllables count: ${JSON.stringify(parsed.syllables.count)}`);
+        // console.log(`Pronunciation: ${JSON.stringify(parsed.pronunciation.all)}`);
 
-        // Non-arrays:
-        const newWord = parsed.word;
-        const newDefinition = parsed.results[0].definition;
-        const newPartOfSpeech = parsed.results[0].partOfSpeech;
-        const newFrequency = parsed.frequency;
-        const newNumberOfSyllables = parsed.syllables.count;
-        const newPronunciation = parsed.pronunciation.all;
-        // Arrays:
-        const newSimilarTo = parsed.results[0].similarTo[0];
-        const newAntonyms = parsed.results[0].antonyms[0];
-        const newExamples = parsed.results[0].examples[0];
-        // TO-DO: MAP ALL SYLLABLES:
-        const newList = parsed.syllables.list;
+        // // Non-arrays:
+        // const newWord = parsed.word;
+        // const newDefinition = parsed.results[0].definition;
+        // const newPartOfSpeech = parsed.results[0].partOfSpeech;
+        // const newFrequency = parsed.frequency;
+        // const newNumberOfSyllables = parsed.syllables.count;
+        // const newPronunciation = parsed.pronunciation.all;
+        // // Arrays:
+        // const newSimilarTo = parsed.results[0].similarTo[0];
+        // const newAntonyms = parsed.results[0].antonyms[0];
+        // const newExamples = parsed.results[0].examples[0];
+        // // TO-DO: MAP ALL SYLLABLES:
+        // const newList = parsed.syllables.list;
         
-        this.setState({
-          word: newWord,
-          definition: newDefinition,
-          partOfSpeech: newPartOfSpeech,
-          similarTo: newSimilarTo,
-          antonyms: newAntonyms,
-          examples: newExamples,
-          frequency: newFrequency,
-          numberOfSyllables: newNumberOfSyllables,
-          list: newList,
-          pronunciation: newPronunciation,
-        });
+        // this.setState({
+        //   word: newWord,
+        //   definition: newDefinition,
+        //   partOfSpeech: newPartOfSpeech,
+        //   similarTo: newSimilarTo,
+        //   antonyms: newAntonyms,
+        //   examples: newExamples,
+        //   frequency: newFrequency,
+        //   numberOfSyllables: newNumberOfSyllables,
+        //   list: newList,
+        //   pronunciation: newPronunciation,
+        // });
 
       },
     })
