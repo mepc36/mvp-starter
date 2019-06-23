@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './styles/wordProfileStyles.css';
 import responsiveVoice from 'responsivevoice';
+import PronounceWord from './PronounceWord.jsx'
 
 class WordProfile extends React.Component {
   constructor(props) {
@@ -8,13 +9,6 @@ class WordProfile extends React.Component {
     this.state = {
 
     }
-  }
-
-  pronounceWord(e) {
-    e.preventDefault();
-    const newWord = this.props.word;
-    console.log(`newWord: ${typeof newWord}`);
-    setTimeout(window.responsiveVoice.speak(newWord), 0);
   }
 
   render() {
@@ -69,8 +63,10 @@ class WordProfile extends React.Component {
             </tr>
           </tbody>
         </table>
-        <button onClick={(e) => this.props.saveWord(e)}>Save!</button>
-        <button onClick={(e) => this.pronounceWord(e)}>Pronounce Word</button>
+        <br />
+        <PronounceWord searched={this.props.searched} word={this.props.word}/>
+        <br />
+        <button onClick={(e) => this.props.saveWord(e)}>Save Word!</button>
       </div>
     )
   }

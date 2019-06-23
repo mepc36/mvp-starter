@@ -26,8 +26,8 @@ var wordProfileSchema = mongoose.Schema({
 
 var WordProfile = mongoose.model('WordProfile', wordProfileSchema);
 
-var selectAllWordProfiles = function(callback) {
-  WordProfile.find({}, function(err, wordProfiles) {
+var selectAllWordProfiles = (callback) => {
+  WordProfile.find({}, (err, wordProfiles) => {
     if(err) {
       callback(err, null);
     } else {
@@ -36,8 +36,17 @@ var selectAllWordProfiles = function(callback) {
   });
 };
 
+var selectSingleWordProfile = (callback, loadedWord) => {
+  WordProfile.find({word: loadedWord}, (err, wordProfiles) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, wordProfiles);
+    }
+  });
+};
+
 var insertWordProfile = (newWordProfile, callback) => {
-  // MONGOOSE:
   WordProfile.create(newWordProfile, (error, result) => {
     if (error) {
       callback(error, null);
@@ -45,16 +54,8 @@ var insertWordProfile = (newWordProfile, callback) => {
       callback(null, result);
     }
   });
-
-  // MONGODB:
-  // db.collection('favoriteWords').insert(newWordProfile, (error, result) => {
-  //   if (error) {
-  //     callback(error, null);
-  //   } else {
-  //     callback(null, result);
-  //   }
-  // });
 };
 
 module.exports.selectAllWordProfiles = selectAllWordProfiles;
 module.exports.insertWordProfile = insertWordProfile;
+module.exports.selectSingleWordProfile = insertWordProfile;

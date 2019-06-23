@@ -4,15 +4,19 @@ import $ from 'jquery';
 import WordSubmit from './components/WordSubmit.jsx';
 import WordProfile from './components/WordProfile.jsx'
 import keys from './components/wordsApiKey';
+import RelevantImage from './components/RelevantImage.jsx';
+import DatabaseWords from './components/DatabaseWords.jsx';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       chosenWord: '',
-      favoriteWords: ['serendipitous', 'mondegreen', 'tittle', 'paella', 'antediluvian', 'sinecure', 'imprimatur', 'cellar door', 'summer afternoon', 'hebenon', 'honorificabilitudinitatibus', 'zhuzh', 'jabberwocky', 'sesquipedalian', 'contronym', 'hyphy', 'gewgaw', 'pettifog', 'gyre', 'milquetoast', 'eunoia', 'rigmarole', 'esoteric', 'cardamom', 'erroneous', 'tiramisu'],
+      searched: false,
+      favoriteWords: ['hullabaloo', 'serendipitous', 'mondegreen', 'tittle', 'paella', 'antediluvian', 'sinecure', 'imprimatur', 'cellar door', 'summer afternoon', 'hebenon', 'honorificabilitudinitatibus', 'zhuzh', 'jabberwocky', 'sesquipedalian', 'contronym', 'hyphy', 'gewgaw', 'pettifog', 'gyre', 'milquetoast', 'eunoia', 'rigmarole', 'esoteric', 'cardamom', 'erroneous', 'tiramisu'],
       word: '',
       profile: {
+        word: '',
         definition: '',
         partOfSpeech: '',
         similarTo: '',
@@ -23,6 +27,7 @@ class App extends React.Component {
         list: '',
         pronunciation: '',
       },
+      imageUrl: '',
     }
   }
 
@@ -102,6 +107,21 @@ class App extends React.Component {
 
         this.setState({
           profile: newProfile,
+          searched: true,
+        });
+
+        $.ajax({
+          url: `https://www.googleapis.com/customsearch/v1?key=${keys.googleCustomSearchKey}&searchType=image&cx=${keys.googleSearchEngineKey}&q=${this.state.word}`,
+          success: (success) => {
+            if (success.items[0] !== undefined) {
+              var newImageUrl = success.items[0].link;
+            } else {
+              this.state.imageUrl = '';
+            }
+            this.setState({
+              imageUrl: newImageUrl,
+            })
+          }
         });
       },
     })
@@ -110,19 +130,22 @@ class App extends React.Component {
   saveWord(e) {
     e.preventDefault();
     const newRecord = this.state.profile;
-  
-    $.ajax({
-      url: '/wordProfiles',
-      method: 'POST',
-      data: newRecord,
-      dataType: 'application/json',
-      success: (success) => {
-        console.log(`Success: ${JSON.stringify(success)}`);
-      },
-      error: (error) => {
-        console.log(`Success: ${JSON.stringify(error)}`);
-      }
-    })
+    if (this.state.word === '') {
+      console.log('You must search for a word before you can save its profile to a database!')
+    } else {
+      $.ajax({
+        url: '/wordProfiles',
+        method: 'POST',
+        data: newRecord,
+        dataType: 'application/json',
+        success: (success) => {
+          console.log(`saveWord() Success-success: ${JSON.stringify(success)}`);
+        },
+        error: (error) => {
+          console.log(`saveWord() Error-success: ${JSON.stringify(error)}`);
+        }
+      });
+    }
   }
 
   componentDidMount() {
@@ -132,13 +155,37 @@ class App extends React.Component {
     })
   }
 
+  loadWord(e, searchedWord) {
+    e.preventDefault();
+    console.log('Loading word!');
+    $.ajax({
+      url: '/loadWord',
+      data: searchedWord,
+      success: (success) => {
+        if (success.items[0] !== undefined) {
+          var newImageUrl = success.items[0].link;
+        } else {
+          this.state.imageUrl = '';
+        }
+        this.setState({
+          imageUrl: newImageUrl,
+        })
+      }
+    });
+  }
+
   render () {
     return (<div>
       <h1>Friends With Words:</h1>
-      <h2>Do you "{this.state.chosenWord}"?</h2>
-      <h2>So do we!</h2>
+      <h3>Do you "{this.state.chosenWord}"? Us too!</h3>
       <WordSubmit submitInfo={this.submitInfo.bind(this)} getWord={this.getWord.bind(this)}/>
-      <WordProfile saveWord={this.saveWord.bind(this)} word={this.state.profile.word} definition={this.state.profile.definition} partOfSpeech={this.state.profile.partOfSpeech} similarTo={this.state.profile.similarTo} antonyms={this.state.profile.antonyms} examples={this.state.profile.examples} frequency={this.state.profile.frequency} numberOfSyllables={this.state.profile.numberOfSyllables} list={this.state.profile.list} pronunciation={this.state.profile.pronunciation} />
+      <br />
+      <WordProfile searched={this.state.searched} saveWord={this.saveWord.bind(this)} word={this.state.profile.word} definition={this.state.profile.definition} partOfSpeech={this.state.profile.partOfSpeech} similarTo={this.state.profile.similarTo} antonyms={this.state.profile.antonyms} examples={this.state.profile.examples} frequency={this.state.profile.frequency} numberOfSyllables={this.state.profile.numberOfSyllables} list={this.state.profile.list} pronunciation={this.state.profile.pronunciation} />
+      <br />
+      <DatabaseWords />
+      <br />
+      <button onClick={(e) => this.loadWord(e)}>Load word info!</button>
+      <RelevantImage searched={this.state.searched} imageUrl={this.state.imageUrl}/>
     </div>)
   }
 }

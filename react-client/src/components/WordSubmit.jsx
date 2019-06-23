@@ -16,6 +16,7 @@ class WordSubmit extends React.Component {
       <form>
         <input onChange={(e) => this.props.getWord(e)} placeholder="Favorite word?" width="200"></input>
         <br/>
+        <br/>
         <button onClick={(e) => this.props.submitInfo(e)}>Submit!</button>
       </form>
     </div>

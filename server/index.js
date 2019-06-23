@@ -10,12 +10,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-app.get('/wordProfiles', function (req, res) {
-  wordProfiles.selectAllWordProfiles(function(err, data) {
+app.get('/wordProfiles', (req, res) => {
+  console.log('Getting word!');
+  wordProfiles.selectAllWordProfiles((err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      res.sendStatus(200).json(data);
+      res.json(data);
+    }
+  });
+});
+
+app.get('/loadWord', (req, res) => {
+  console.log(`Loading the word ${req.body} from the database!`);
+  wordProfiles.selectSingleWordProfile((err, data) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.json(data);
     }
   });
 });
