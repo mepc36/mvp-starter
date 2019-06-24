@@ -14,10 +14,10 @@ class WordSubmit extends React.Component {
     return (
       <div>
       <form>
-        <input onChange={(e) => this.props.getWord(e)} placeholder="Favorite word?" width="200"></input>
+        <input onChange={(e) => this.props.getWord(e)} placeholder="Favorite word?" width="200" id="inputBox"></input>
         <br/>
         <br/>
-        <button onClick={(e) => this.props.submitInfo(e)}>Submit!</button>
+        <button onClick={(e) => this.props.submitInfo(e)}>Get word info!</button>
       </form>
     </div>
     )

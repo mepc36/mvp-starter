@@ -123,7 +123,7 @@ class PronounceWord extends React.Component {
           <option>Fallback UK Female</option>
         </select>
         <br/>
-        <button onClick={(e) => this.pronounceWord(e)}>Pronounce Word</button>
+        <button onClick={(e) => this.pronounceWord(e)}>Pronounce word!</button>
         <br/>
       </div>
     )

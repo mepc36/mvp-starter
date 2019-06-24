@@ -48,6 +48,9 @@ class App extends React.Component {
     const wordsApiXRapidApiHost = 'wordsapiv1.p.rapidapi.com';
     const twinWordApiUrl = 'https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=mask';
     const twinWordXRapidApiHost = 'twinword-word-graph-dictionary.p.rapidapi.com';
+    const newGoogleKey = keys.newGoogleKey;
+
+    console.log(`Test: ${this.state.word}`);
 
     $.ajax({
       url: `https://rhymebrain.com/talk?function=getRhymes&word=${this.state.word}`,
@@ -102,7 +105,7 @@ class App extends React.Component {
         var newProfile = {}
 
         if (parsed.success === false) {
-          console.log(`Sorry, we don't have that word!`);
+          console.log(`Sorry, we don't have any lexical info on that word!`);
           return;
         }
 
@@ -126,8 +129,12 @@ class App extends React.Component {
         } else {
           newProfile.frequency = '';
         }
-        if (parsed.syllables.count !== undefined) {
-          newProfile.numberOfSyllables = parsed.syllables.count;
+        if (parsed.syllables !== undefined) {
+          if (parsed.syllables.count !== undefined) {
+            newProfile.numberOfSyllables = parsed.syllables.count;
+          } else {
+            newProfile.numberOfSyllables = '';
+          }
         } else {
           newProfile.numberOfSyllables = '';
         }
@@ -152,7 +159,15 @@ class App extends React.Component {
           newProfile.examples = '';
         }
         // TO-DO: MAP OUT ALL THESE SYLLABLES:
-        newProfile.list = parsed.syllables.list[0];
+        if (parsed.syllables !== undefined) {
+          if (parsed.syllables.list !== undefined) {
+            newProfile.list = parsed.syllables.list[0];
+          } else {
+            newProfile.list = [];
+          }
+        } else {
+          newProfile.list = [];
+        }
 
         this.setState({
           profile: newProfile,
@@ -160,7 +175,7 @@ class App extends React.Component {
         });
 
         $.ajax({
-          url: `https://www.googleapis.com/customsearch/v1?key=${keys.googleCustomSearchKey}&searchType=image&cx=${keys.googleSearchEngineKey}&q=${this.state.word}`,
+          url: `https://www.googleapis.com/customsearch/v1?key=${keys.newGoogleKey}&searchType=image&cx=${keys.googleSearchEngineKey}&q=${this.state.word}`,
           success: (success) => {
             if (success.items[0] !== undefined) {
               var newImageUrl = success.items[0].link;
@@ -170,6 +185,9 @@ class App extends React.Component {
             this.setState({
               imageUrl: newImageUrl,
             })
+          },
+          error: (error) => {
+            console.log(`Error: ${error}`);
           }
         });
       },
@@ -223,14 +241,12 @@ class App extends React.Component {
   }
 
   loadRhyme(e, query) {
-    // e.preventDefault();
-    // this.setState({
-    //   wantedWord: query,
-    //   word: query,
-    // });
-    // this.submitInfo(e);
-    // // var boundFunc = this.submitInfo.bind(this);
-    // // boundFunc(e);
+    e.preventDefault();
+    document.getElementById('inputBox').value = query;
+    this.setState({
+      wantedWord: query,
+      word: query,
+    });
   }
 
   componentDidMount() {
