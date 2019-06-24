@@ -64,9 +64,10 @@ class WordProfile extends React.Component {
           </tbody>
         </table>
         <br />
-        <PronounceWord searched={this.props.searched} word={this.props.word}/>
-        <br />
         <button onClick={(e) => this.props.saveWord(e)}>Save Word!</button>
+        <br />
+        <br />
+        <PronounceWord searched={this.props.searched} word={this.props.word}/>
       </div>
     )
   }

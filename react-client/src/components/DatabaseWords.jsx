@@ -17,7 +17,7 @@ class DatabaseWords extends React.Component {
       url: 'wordProfiles',
       success: (success) => {
         var newDatabaseProfiles = [];
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < success.length; i++) {
           newDatabaseProfiles.push(success[i]);
         }
         this.setState({
@@ -40,9 +40,14 @@ class DatabaseWords extends React.Component {
         </div>
       )
     } else {
-      for (var i = 0; i < this.state.databaseProfiles.length; i++) {
-        return (<DatabaseItem item={this.state.databaseProfiles[0]}/>)
-      }
+      return (<div><select onChange={(e) => this.props.setWord(e)}>
+        {this.state.databaseProfiles.map(item => (
+            <option>{item.word}</option>
+        ))}
+        </select>
+        <br />
+        <button onClick={(e) => this.props.loadWord(e)}>Load word info!</button>
+        </div>);
     }
   }
 }

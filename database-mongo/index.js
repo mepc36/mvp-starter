@@ -37,7 +37,8 @@ var selectAllWordProfiles = (callback) => {
 };
 
 var selectSingleWordProfile = (callback, loadedWord) => {
-  WordProfile.find({word: loadedWord}, (err, wordProfiles) => {
+  const unloadedWord = loadedWord.wantedWord;
+  WordProfile.find({ word: unloadedWord }, (err, wordProfiles) => {
     if (err) {
       callback(err, null);
     } else {
@@ -58,4 +59,4 @@ var insertWordProfile = (newWordProfile, callback) => {
 
 module.exports.selectAllWordProfiles = selectAllWordProfiles;
 module.exports.insertWordProfile = insertWordProfile;
-module.exports.selectSingleWordProfile = insertWordProfile;
+module.exports.selectSingleWordProfile = selectSingleWordProfile;

@@ -18,9 +18,12 @@ class PronounceWord extends React.Component {
 
   pronounceWord(e) {
     e.preventDefault();
-    if (this.props.searched === false || this.state.accent === '') {
-      console.log('You must search for a word before you can hear its pronunciation!')
-    } else {
+    if (this.props.searched === false) {
+      console.log('You must search for a word, or load one from the database, before you can hear its pronunciation!')
+    } else if (this.state.accent === '') {
+      console.log('You must select an accent from the dropdown menu in order to hear a pronunciation!')
+    }
+    else {
       const newWord = this.props.word;
       const newAccent = this.state.accent;
       setTimeout(window.responsiveVoice.speak(newWord, newAccent), 0);

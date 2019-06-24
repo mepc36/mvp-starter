@@ -6,6 +6,7 @@ import WordProfile from './components/WordProfile.jsx'
 import keys from './components/wordsApiKey';
 import RelevantImage from './components/RelevantImage.jsx';
 import DatabaseWords from './components/DatabaseWords.jsx';
+import RhymeForm from './components/RhymeForm.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -28,6 +29,8 @@ class App extends React.Component {
         pronunciation: '',
       },
       imageUrl: '',
+      wantedWord: '',
+      rhymes: [],
     }
   }
 
@@ -41,10 +44,51 @@ class App extends React.Component {
   submitInfo(e) {
     e.preventDefault();
     const wordsApiKey = keys.wordsApiKey;
-    const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${this.state.word}/`
-    const wordsApiXRapidApiHost = 'wordsapiv1.p.rapidapi.com'
-    const twinWordApiUrl = "https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=mask"
-    const twinWordXRapidApiHost = "twinword-word-graph-dictionary.p.rapidapi.com"
+    const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${this.state.word}/`;
+    const wordsApiXRapidApiHost = 'wordsapiv1.p.rapidapi.com';
+    const twinWordApiUrl = 'https://twinword-word-graph-dictionary.p.rapidapi.com/definition/?entry=mask';
+    const twinWordXRapidApiHost = 'twinword-word-graph-dictionary.p.rapidapi.com';
+
+    $.ajax({
+      url: `https://rhymebrain.com/talk?function=getRhymes&word=${this.state.word}`,
+      dataType: 'application/json',
+      error: (error) => {
+        var newRhymes = [];
+        var parsed = JSON.parse(error.responseText);
+
+        for (var i = 0; i < 100 && i < parsed.length; i++) {
+          newRhymes.push(parsed[i]);
+        }
+        this.setState({
+          rhymes: newRhymes,
+        })
+      },
+      success: (success) => {
+        console.log(`getRhyme success: ${success}`);
+      }
+    })
+
+    // $.ajax({
+    //   url: `https://rhymebrain.com/talk?function=getPortmanteaus&word=${this.state.word}`,
+    //   dataType: 'application/json',
+    //   error: (error) => {
+    //     console.log(`getPortmanteau error: ${JSON.stringify(error)}`);
+    //   },
+    //   success: (success) => {
+    //     console.log(`getPortmanteau success: ${success}`);
+    //   }
+    // });
+
+    // $.ajax({
+    //   url: `https://rhymebrain.com/talk?function=getWordInfo&word=${this.state.word}`,
+    //   dataType: 'application/json',
+    //   error: (error) => {
+    //     console.log(`getWordInfo error: ${JSON.stringify(error)}`);
+    //   },
+    //   success: (success) => {
+    //     console.log(`getWordInfo success: ${success}`);
+    //   }
+    // });
 
     $.ajax({
       url: `https://wordsapiv1.p.rapidapi.com/words/${this.state.word}/`,
@@ -56,6 +100,11 @@ class App extends React.Component {
       error: (success) => {
         const parsed = JSON.parse(success.responseText);
         var newProfile = {}
+
+        if (parsed.success === false) {
+          console.log(`Sorry, we don't have that word!`);
+          return;
+        }
 
         if (parsed.word !== undefined) {
           newProfile.word = parsed.word;
@@ -148,30 +197,47 @@ class App extends React.Component {
     }
   }
 
+  setWord(e, newWord) {
+    e.preventDefault();
+    this.setState({
+      wantedWord: e.target.value,
+    })
+  }
+
+  loadWord(e) {
+    e.preventDefault();
+    var wantedWord = { wantedWord: this.state.wantedWord }
+    $.ajax({
+      method: 'POST',
+      url: '/loadWord',
+      data: wantedWord,
+      success: (success) => {
+        var newProfile = success[0];
+        this.setState({
+          profile: newProfile,
+          word: newProfile.word,
+          searched: true,
+        });
+      }
+    });
+  }
+
+  loadRhyme(e, query) {
+    // e.preventDefault();
+    // this.setState({
+    //   wantedWord: query,
+    //   word: query,
+    // });
+    // this.submitInfo(e);
+    // // var boundFunc = this.submitInfo.bind(this);
+    // // boundFunc(e);
+  }
+
   componentDidMount() {
     var newChosenWord = this.state.favoriteWords[Math.round(Math.random() * (this.state.favoriteWords.length - 1))];
     this.setState({
       chosenWord: newChosenWord,
     })
-  }
-
-  loadWord(e, searchedWord) {
-    e.preventDefault();
-    console.log('Loading word!');
-    $.ajax({
-      url: '/loadWord',
-      data: searchedWord,
-      success: (success) => {
-        if (success.items[0] !== undefined) {
-          var newImageUrl = success.items[0].link;
-        } else {
-          this.state.imageUrl = '';
-        }
-        this.setState({
-          imageUrl: newImageUrl,
-        })
-      }
-    });
   }
 
   render () {
@@ -182,9 +248,10 @@ class App extends React.Component {
       <br />
       <WordProfile searched={this.state.searched} saveWord={this.saveWord.bind(this)} word={this.state.profile.word} definition={this.state.profile.definition} partOfSpeech={this.state.profile.partOfSpeech} similarTo={this.state.profile.similarTo} antonyms={this.state.profile.antonyms} examples={this.state.profile.examples} frequency={this.state.profile.frequency} numberOfSyllables={this.state.profile.numberOfSyllables} list={this.state.profile.list} pronunciation={this.state.profile.pronunciation} />
       <br />
-      <DatabaseWords />
+      <DatabaseWords loadWord={this.loadWord.bind(this)} setWord={this.setWord.bind(this)}/>
       <br />
-      <button onClick={(e) => this.loadWord(e)}>Load word info!</button>
+      <RhymeForm loadRhyme={this.loadRhyme.bind(this)} rhymes={this.state.rhymes}/>
+      <br />
       <RelevantImage searched={this.state.searched} imageUrl={this.state.imageUrl}/>
     </div>)
   }

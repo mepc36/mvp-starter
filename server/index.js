@@ -11,7 +11,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.get('/wordProfiles', (req, res) => {
-  console.log('Getting word!');
   wordProfiles.selectAllWordProfiles((err, data) => {
     if (err) {
       res.sendStatus(500);
@@ -21,20 +20,17 @@ app.get('/wordProfiles', (req, res) => {
   });
 });
 
-app.get('/loadWord', (req, res) => {
-  console.log(`Loading the word ${req.body} from the database!`);
+app.post('/loadWord', (req, res) => {
   wordProfiles.selectSingleWordProfile((err, data) => {
     if (err) {
       res.sendStatus(500);
     } else {
       res.json(data);
     }
-  });
+  }, req.body);
 });
 
 app.post('/wordProfiles', function (req, res) {
-  console.log(`REQ.BODY: ${JSON.stringify(req.body)}`);
-
   wordProfiles.insertWordProfile(req.body, (err, data) => {
     if (err) {
       res.sendStatus(500);
